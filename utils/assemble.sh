@@ -61,7 +61,7 @@ repo_dir=$(dirname $script_dir)
 build_dir="$repo_dir/build"
 destination_file="$build_dir/Installomator.sh"
 fragments_dir="$repo_dir/fragments"
-labels_dir="$fragments_dir/labels"
+labels_dir="$fragments_dir/SF-Labels_InProd"
 
 # add default labels_dir to label_paths
 label_paths+=$labels_dir
