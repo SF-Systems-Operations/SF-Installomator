@@ -2506,6 +2506,14 @@ wireshark)
     downloadURL=$(echo "$sparkleFeed" | xpath '(//rss/channel/item/enclosure/@url)[1]' 2>/dev/null | cut -d '"' -f 2)
     expectedTeamID="7Z6EMTD2C6"
     ;;
+zoom)
+    name="zoom.us"
+    type="pkg"
+    downloadURL="https://zoom.us/client/latest/ZoomInstallerIT.pkg"
+    appNewVersion="$(curl -fsIL ${downloadURL} | grep -i ^location | cut -d "/" -f5)"
+    expectedTeamID="BJ4HAAB9B3"
+    versionKey="CFBundleVersion"
+    ;;
 zoomclient)
     name="zoom.us"
     type="pkg"
