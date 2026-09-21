@@ -4,5 +4,6 @@ sharebrowserdesktopv71110)
     packageID="com.sns.pkg.EVOShareBrowserWeb"
     downloadURL="https://www.snsftp.com/guest/sharebrowser/7.1.1/ShareBrowser%20Desktop%20v7.1.1.10.dmg"
     appNewVersion=""
+    blockingProcesses=("ShareBrowser")
     expectedTeamID="76PTYDYVW4"
     ;;
