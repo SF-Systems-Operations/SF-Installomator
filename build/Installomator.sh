@@ -30,7 +30,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 # also no actual installation will be performed
 # debug mode 1 will download to the directory the script is run in, but will not check the version
 # debug mode 2 will download to the temp directory, check for blocking processes, check the version, but will not install anything or remove the current version
-DEBUG=0
+DEBUG=1
 
 # notify behavior
 NOTIFY=success
@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-09-18"
+VERSIONDATE="2026-09-21"
 
 # MARK: Functions
 
@@ -2361,7 +2361,14 @@ rstudio)
     appNewVersion=$(curl -sfI "$downloadURL" | grep -i "^location" | grep -oE '[0-9]{4}\.[0-9]{2}\.[0-9]{1,2}\-[0-9]+' | sed 's/-/+/')
     expectedTeamID="FYF2F5GFX4"
     ;;
-signiantapp)
+sharebrowserdesktopv71110)
+    name="ShareBrowser%20Desktop%20v7.1.1.10"
+    type="pkgInDmg"
+    packageID="com.sns.pkg.EVOShareBrowserWeb"
+    downloadURL="https://www.snsftp.com/guest/sharebrowser/7.1.1/ShareBrowser%20Desktop%20v7.1.1.10.dmg"
+    appNewVersion=""
+    expectedTeamID="76PTYDYVW4"
+    ;;signiantapp)
     name="Signiant App"
     type="dmg"
     downloadURL="https://updates.signiant.com/signiant_app/$(curl -fs "https://updates.signiant.com/signiant_app/signiant-app-info-mac.json" | grep -o '"file": *"[^"]*"' | awk -F '"' '{print $4}')"
