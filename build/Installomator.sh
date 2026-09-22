@@ -87,7 +87,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=jamf
+LOGO=appstore
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -1703,6 +1703,25 @@ audacity)
     appNewVersion=$(versionFromGit audacity audacity)
     appCustomVersion(){ defaults read "/Applications/Audacity.app/Contents/Info.plist" CFBundleVersion | cut -d '.' -f 1-3 }
     expectedTeamID="AWEYX923UX"
+    ;;
+audacity|\
+audacity3)
+    name="Audacity"
+    type="dmg"
+    releaseData=$(curl -fsL "https://api.github.com/repos/audacity/audacity/releases?per_page=100")
+    downloadURL=$(printf '%s\n' "$releaseData" | awk -F '"' '/"browser_download_url":/ && /audacity-macOS-3\.[0-9]+\.[0-9]+-universal\.dmg/ && url == "" { url=$4 } END { print url }')
+    appNewVersion=$(printf '%s\n' "$downloadURL" | sed -E 's|.*/audacity-macOS-([0-9]+(\.[0-9]+)+)-universal\.dmg$|\1.0|')
+    expectedTeamID="6EPAF2X3PR"
+    ;;
+audacity4)
+    name="Audacity"
+    appName="Audacity 4.app"
+    type="dmg"
+    archiveName="Audacity4.dmg"
+    releaseData=$(curl -fsL "https://api.github.com/repos/audacity/audacity/releases?per_page=100")
+    downloadURL=$(printf '%s\n' "$releaseData" | awk -F '"' '/"browser_download_url":/ && /audacity-macOS-4\.[0-9]+\.[0-9]+-universal\.dmg/ && url == "" { url=$4 } END { print url }')
+    appNewVersion=$(printf '%s\n' "$downloadURL" | sed -E 's|.*/audacity-macOS-([0-9]+(\.[0-9]+)+)-universal\.dmg$|\1|')
+    expectedTeamID="6EPAF2X3PR"
     ;;
 bbeditpkg)
     name="BBEdit"
