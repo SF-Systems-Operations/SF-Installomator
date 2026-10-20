@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-09-25"
+VERSIONDATE="2026-10-20"
 
 # MARK: Functions
 
@@ -595,7 +595,7 @@ getAppVersion() {
 
     # pkgs contains a version number, then we don't have to search for an app
     if [[ $packageID != "" ]]; then
-        appversion="$(pkgutil --pkg-info-plist ${packageID} 2>/dev/null | grep -A 1 pkg-version | tail -1 | sed -E 's/.*>([0-9.]*)<.*/\1/g')"
+        appversion="$(pkgutil --pkg-info-plist "${packageID}" 2>/dev/null | plutil -extract pkg-version raw -o - -)"
         if [[ $appversion != "" ]]; then
             printlog "found packageID $packageID installed, version $appversion"
             updateDetected="YES"
@@ -1087,7 +1087,7 @@ installFromPKG() {
         installFromPKG
     fi
 
-    if [[ $pkginstallstatus -ne 0 ]] ; then
+    if [[ $pkgInstallStatus -ne 0 ]] ; then
     #if ! installer -pkg "$archiveName" -tgt "$targetDir" ; then
         cleanupAndExit 9 "Error installing $archiveName error:\n$logoutput" ERROR
     fi
@@ -1413,7 +1413,12 @@ updateDialog() {
             echo "progress: $progress" >> $cmd_file
         fi
         if [[ $message != "" ]]; then
-            echo "progresstext: $message" >> $cmd_file
+            if [[ $appNewVersion != "" ]]; then
+                appVersionProgressText=${appNewVersion// /}
+                echo "progresstext: v$appVersionProgressText $message" >> $cmd_file
+            else
+                echo "progresstext: $message" >> $cmd_file
+            fi
         fi
     else
         # list item has a value, so we update the progress and text in the list
@@ -1424,7 +1429,6 @@ updateDialog() {
         fi
     fi
 }
-
 # NOTE: check minimal macOS requirement
 autoload is-at-least
 
@@ -1675,6 +1679,16 @@ adobereaderdc-update)
     expectedTeamID="JQ525L2MZD"
     blockingProcesses=( "Acrobat Pro DC" "AdobeAcrobat" "AdobeReader" "Distiller" )
     Company="Adobe"
+    ;;
+appautopatch4)
+    name="App Auto-Patch"
+    type="pkg"
+    aapDetails="$(curl -fsL "https://downloads.appautopatch.app/latest.json")"
+    appNewVersion="$(getJSONValue "$aapDetails" "build")"
+    versionKey="CFBundleVersion"
+    downloadURL="$(getJSONValue "$aapDetails" "url")"
+    expectedTeamID="6GBSVT64FS"
+    blockingProcesses=( NONE )
     ;;
 applesfsymbols|\
 sfsymbols)
