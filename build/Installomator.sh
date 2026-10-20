@@ -145,7 +145,7 @@ REOPEN="yes"
 
 
 # Interrupt Do Not Disturb (DND) full screen apps
-INTERRUPT_DND="yes"
+INTERRUPT_DND="no"
 # options:
 #  - yes           Script will run without checking for DND full screen apps.
 #  - no            Script will exit when an active DND full screen app is detected.
