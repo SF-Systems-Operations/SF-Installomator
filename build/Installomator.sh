@@ -87,7 +87,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=jamf
+LOGO=appstore
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -145,7 +145,7 @@ REOPEN="yes"
 
 
 # Interrupt Do Not Disturb (DND) full screen apps
-INTERRUPT_DND="no"
+INTERRUPT_DND="yes"
 # options:
 #  - yes           Script will run without checking for DND full screen apps.
 #  - no            Script will exit when an active DND full screen app is detected.
@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-10-20"
+VERSIONDATE="2026-11-09"
 
 # MARK: Functions
 
@@ -1765,6 +1765,13 @@ caffeine)
     downloadURL=$(downloadURLFromGit IntelliScape caffeine)
     appNewVersion=$(versionFromGit IntelliScape caffeine)
     expectedTeamID="YD6LEYT6WZ"
+    ;;
+canva)
+    name="Canva"
+    type="dmg"
+    downloadURL="https://desktop-release.canva.com/Canva-latest.dmg"
+    appNewVersion=$(curl -fsL "https://desktop-release.canva.com/latest-mac.yml" | awk '/^version:/ { print $2; exit }')
+    expectedTeamID="5HD2ARTBFS"
     ;;
 carboncopycloner)
     name="Carbon Copy Cloner"
