@@ -40,7 +40,7 @@ NOTIFY=silent
 #   - all          all notifications (great for Self Service installation)
 
 # time in seconds to wait for a prompt to be answered before exiting the script
-PROMPT_TIMEOUT=300
+PROMPT_TIMEOUT=360
 # Common times translated into seconds
 # 60    =  1 minute
 # 300   =  5 minutes
@@ -353,7 +353,7 @@ if [[ $(/usr/bin/arch) == "arm64" ]]; then
     fi
 fi
 VERSION="10.10beta"
-VERSIONDATE="2026-11-09"
+VERSIONDATE="2026-11-10"
 
 # MARK: Functions
 
@@ -1598,17 +1598,19 @@ adobecreativeclouddesktop)
     appName="Creative Cloud.app"
     type="dmg"
     if pgrep -q "Adobe Installer"; then
-        printlog "Adobe Installer is running, not a good time to update." WARN
-        printlog "################## End $APPLICATION \n\n" INFO
-        exit 75
+        cleanupAndExit 75 "Adobe Installer is running; Adobe Creative Cloud cannot be updated." WARN
     fi
-    if [[ "$(arch)" == "arm64" ]]; then
-        downloadURL=$(curl -fs "https://helpx.adobe.com/in/download-install/apps/download-install-apps/creative-cloud-apps/download-creative-cloud-desktop-app-using-direct-links.html" | grep -o 'https.*macarm64.*dmg' | head -1 | cut -d '"' -f1)
+    if [[ $(arch) == "arm64" ]]; then
+        adobeArch="macarm64"
     else
-        downloadURL=$(curl -fs "https://helpx.adobe.com/in/download-install/apps/download-install-apps/creative-cloud-apps/download-creative-cloud-desktop-app-using-direct-links.html" | grep -o 'https.*osx10.*dmg' | head -1 | cut -d '"' -f1)
+        adobeArch="osx10"
     fi
-    appNewVersion=$(echo $downloadURL | grep -o '[^x]*$' | cut -d '.' -f 1 | sed 's/_/\./g')
-    appCustomVersion() { defaults read "/Library/Application Support/Adobe/Adobe Desktop Common/ADS/Adobe Desktop Service.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null }
+    adobeConfig=$(curl -fsSL "https://ffc-static-cdn.oobesaas.adobe.com/init/v1/$adobeArch/ccdConfig.json") || cleanupAndExit 14 "Could not retrieve Adobe Creative Cloud update configuration." ERROR
+    appNewVersion=$(getJSONValue "$(getJSONValue "$adobeConfig" ".features['feature-response']['feature-entry'].find(item => item.id == 'ccd.fw.update.greenline.latest').data")" "version")
+    [[ -n "$appNewVersion" ]] || cleanupAndExit 14 "Could not determine Adobe Creative Cloud version." ERROR
+    IFS='.' read -r major minor patch build <<< "$appNewVersion"
+    downloadURL="https://ccmdls.adobe.com/AdobeProducts/StandaloneBuilds/ACCC/ESD/$major.$minor.$patch/$build/$adobeArch/ACCCx${appNewVersion//./_}.dmg"
+    appCustomVersion() { sqlite3 "/Library/Application Support/Adobe/Adobe Desktop Common/pim.db" "SELECT value FROM pim_meta WHERE key='application_version';" 2>/dev/null; }
     targetDir="/Applications/Utilities/Adobe Creative Cloud/ACC/"
     installerTool="Install.app"
     CLIInstaller="Install.app/Contents/MacOS/Install"
