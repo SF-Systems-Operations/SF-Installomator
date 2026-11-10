@@ -33,14 +33,14 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 DEBUG=0
 
 # notify behavior
-NOTIFY=success
+NOTIFY=silent
 # options:
 #   - success      notify the user on success
 #   - silent       no notifications
 #   - all          all notifications (great for Self Service installation)
 
 # time in seconds to wait for a prompt to be answered before exiting the script
-PROMPT_TIMEOUT=300
+PROMPT_TIMEOUT=360
 # Common times translated into seconds
 # 60    =  1 minute
 # 300   =  5 minutes
@@ -87,7 +87,7 @@ BLOCKING_PROCESS_ACTION=prompt_user
 
 
 # logo-icon used in dialog boxes if app is blocking
-LOGO=appstore
+LOGO=jamf
 # options:
 #   - appstore      Icon is Apple App Store (default)
 #   - jamf          JAMF Pro
@@ -145,13 +145,13 @@ REOPEN="yes"
 
 
 # Interrupt Do Not Disturb (DND) full screen apps
-INTERRUPT_DND="yes"
+INTERRUPT_DND="no"
 # options:
 #  - yes           Script will run without checking for DND full screen apps.
 #  - no            Script will exit when an active DND full screen app is detected.
 
 # Comma separated list of app names to ignore when evaluating DND
-IGNORE_DND_APPS=""
+IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 # example that will ignore browsers when evaluating DND:
 # IGNORE_DND_APPS="firefox,Google Chrome,Safari,Microsoft Edge,Opera,Amphetamine,caffeinate"
 
